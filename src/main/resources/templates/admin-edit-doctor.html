@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Doctor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            position: fixed;
+            height: 100%;
+            z-index: 100;
+            overflow-y: auto;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+        .header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+        .availability-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        .availability-day {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .day-label {
+            width: 100px;
+            font-weight: 500;
+        }
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+        }
+        .time-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{admin-dashboard :: sidebar}"></div>
+
+<div class="main-content">
+    <div class="header">
+        <div>
+            <h1 class="h3 mb-0">Edit Doctor Details</h1>
+            <p class="text-muted mb-0">Update doctor information and availability</p>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form th:action="@{'/admin/doctors/update/' + ${doctor.doctorId}}" th:object="${doctor}" method="post">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Doctor Information</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" th:field="*{name}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" th:field="*{email}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-control" th:field="*{phone}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Specialization</label>
+                        <input type="text" class="form-control" th:field="*{specialization}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>Availability</h5>
+                    <div class="availability-container">
+                        <!-- Monday to Friday (required) -->
+                        <div class="availability-day">
+                            <div class="day-label">Monday</div>
+                            <div class="time-inputs">
+                                <div class="time-group">
+                                    <label>Start Time</label>
+                                    <input type="time" class="form-control" th:field="*{mondayStart}" required>
+                                </div>
+                                <div class="time-group">
+                                    <label>End Time</label>
+                                    <input type="time" class="form-control" th:field="*{mondayEnd}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Repeated for Tuesday, Wednesday, Thursday, Friday -->
+
+                        <!-- Saturday (optional) -->
+                        <div class="availability-day">
+                            <div class="day-label">Saturday</div>
+                            <div class="time-inputs">
+                                <div class="time-group">
+                                    <label>Start Time</label>
+                                    <input type="time" class="form-control" th:field="*{saturdayStart}">
+                                </div>
+                                <div class="time-group">
+                                    <label>End Time</label>
+                                    <input type="time" class="form-control" th:field="*{saturdayEnd}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sunday (optional) -->
+                        <div class="availability-day">
+                            <div class="day-label">Sunday</div>
+                            <div class="time-inputs">
+                                <div class="time-group">
+                                    <label>Start Time</label>
+                                    <input type="time" class="form-control" th:field="*{sundayStart}">
+                                </div>
+                                <div class="time-group">
+                                    <label>End Time</label>
+                                    <input type="time" class="form-control" th:field="*{sundayEnd}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-3">
+                <a th:href="@{/admin/doctors}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Update Doctor</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

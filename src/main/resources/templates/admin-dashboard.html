@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #1abc9c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .card-stat {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .card-stat:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-stat.patients { border-left: 4px solid var(--info); }
+        .card-stat.doctors { border-left: 4px solid var(--success); }
+        .card-stat.admins { border-left: 4px solid var(--warning); }
+
+        .card-stat .card-title {
+            color: #6c757d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-stat .card-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .card-stat .card-icon {
+            font-size: 40px;
+            opacity: 0.3;
+        }
+
+        .recent-actions {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .action-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .action-item:last-child {
+            border-bottom: none;
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .action-icon.patient { background-color: rgba(26, 188, 156, 0.1); color: var(--info); }
+        .action-icon.doctor { background-color: rgba(46, 204, 113, 0.1); color: var(--success); }
+        .action-icon.admin { background-color: rgba(243, 156, 18, 0.1); color: var(--warning); }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<div th:fragment="sidebar" class="sidebar" style="width: 250px;">
+    <div class="text-center mb-4">
+        <h4 class="mb-0">Admin Portal</h4>
+        <small class="text-muted">Healthcare Management System</small>
+    </div>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link active "th:href="@{/admin/dashboard}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/patients}">
+                <i class="fas fa-user-injured"></i> Patients
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/doctors}">
+                <i class="fas fa-user-md"></i> Doctors
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/admins}">
+                <i class="fas fa-user-shield"></i> Admins
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="header">
+        <h1 class="h3 mb-0">Admin Dashboard</h1>
+        <p class="text-muted mb-0">Welcome back! Manage your healthcare system efficiently</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-stat patients">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="card-title">PATIENTS</div>
+                            <div class="card-value" th:text="${patientCount}">0</div>
+                            <a th:href="@{/admin/patients}" class="btn btn-sm btn-outline-info mt-2">View All</a>
+                        </div>
+                        <div class="col-4 text-end">
+                            <i class="fas fa-user-injured card-icon text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-stat doctors">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="card-title">DOCTORS</div>
+                            <div class="card-value" th:text="${doctorCount}">0</div>
+                            <a th:href="@{/admin/doctors}" class="btn btn-sm btn-outline-success mt-2">View All</a>
+                        </div>
+                        <div class="col-4 text-end">
+                            <i class="fas fa-user-md card-icon text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-stat admins">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="card-title">ADMINS</div>
+                            <div class="card-value" th:text="${adminCount}">0</div>
+                            <a th:href="@{/admin/admins}" class="btn btn-sm btn-outline-warning mt-2">View All</a>
+                        </div>
+                        <div class="col-4 text-end">
+                            <i class="fas fa-user-shield card-icon text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-actions">
+        <h5 class="mb-4">Recent Actions</h5>
+        <div class="action-item d-flex">
+            <div class="action-icon patient">
+                <i class="fas fa-user-injured"></i>
+            </div>
+            <div>
+                <h6 class="mb-0">New Patient Registered</h6>
+                <small class="text-muted">John Doe registered 2 hours ago</small>
+            </div>
+        </div>
+        <div class="action-item d-flex">
+            <div class="action-icon doctor">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <div>
+                <h6 class="mb-0">Doctor Schedule Updated</h6>
+                <small class="text-muted">Dr. Smith updated availability</small>
+            </div>
+        </div>
+        <div class="action-item d-flex">
+            <div class="action-icon admin">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div>
+                <h6 class="mb-0">New Admin Added</h6>
+                <small class="text-muted">System administrator added</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
