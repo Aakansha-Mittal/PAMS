@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PatientRegistrationService {
 
@@ -38,5 +40,29 @@ public class PatientRegistrationService {
         userRepository.save(user);
     }
 
-    // Similar methods for doctor/admin registration
+    public Patient findByEmail(String email) {
+        Optional<Patient> patient = patientRepository.findByEmail(email);
+        return patient.orElseThrow(() -> new RuntimeException("Patient not found with email: " + email));
+    }
+
+    public Patient findById(Integer patientId) {
+        return patientRepository.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Patient not found with ID: " + patientId));
+    }
+
+    public Patient updatePatientProfile(Patient patientDetails) {
+        Patient patient = findById(patientDetails.getPatientId());
+
+        patient.setName(patientDetails.getName());
+        patient.setPhone(patientDetails.getPhone());
+        patient.setAddress(patientDetails.getAddress());
+        patient.setDob(patientDetails.getDob());
+
+        // Only update password if it's provided
+        if (patientDetails.getPassword() != null && !patientDetails.getPassword().isEmpty()) {
+            patient.setPassword(passwordEncoder.encode(patientDetails.getPassword()));
+        }
+
+        return patientRepository.save(patient);
+    }
 }
