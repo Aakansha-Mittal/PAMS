@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
+        @GetMapping("/")
+        public String home() {
+            return "default";
+        }
+
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "error", required = false) String error,
                                 @RequestParam(value = "logout", required = false) String logout,
@@ -26,4 +31,11 @@ public class LoginController {
     public String accessDenied() {
         return "access-denied";
     }
+
+
+    @GetMapping("/logout")
+        public String logout() {
+        return "redirect:/";
+ }
+
 }

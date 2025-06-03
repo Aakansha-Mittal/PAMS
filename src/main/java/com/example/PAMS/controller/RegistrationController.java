@@ -63,7 +63,7 @@ public class RegistrationController {
         }
         doctorRegistrationService.registerDoctor(doctorDto);
         System.out.println(doctorDto.getPassword());
-        return "redirect:/login?registered";
+        return "redirect:/admin/doctors";
     }
 
     //Admin Registration
@@ -83,7 +83,7 @@ public class RegistrationController {
         }
         adminRegistrationService.registerAdmin(admin);
         System.out.println(admin.getPassword());
-        return "redirect:/login?registered";
+        return "redirect:/admin/admins";
     }
 }
 

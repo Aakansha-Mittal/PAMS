@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .error-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .error-details {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .home-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <div class="error-title">Oops! Something went wrong.</div>
+    <div class="error-message">An unexpected error has occurred. Please try again later.</div>
+    <div class="error-details" th:if="${errorDetails}" th:text="${errorDetails}"></div>
+    <a href="/" class="home-button">Go to Home</a>
+</div>
+</body>
+</html>

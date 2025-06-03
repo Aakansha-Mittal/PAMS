@@ -148,6 +148,8 @@ public class AdminController {
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
         model.addAttribute("doctor", doctor);
         model.addAttribute("availability", parseAvailability(doctor.getAvailability()));
+        System.out.println(doctor);
+        System.out.println(doctor.getAvailability());
         return "admin-edit-doctor";
     }
 
@@ -197,6 +199,7 @@ public class AdminController {
         adminRepository.delete(admin);
         return "redirect:/admin/admins?deleted=true";
     }
+
 
     // Helper methods for availability
     private Map<String, Map<String, String>> parseAvailability(String availabilityJson) {

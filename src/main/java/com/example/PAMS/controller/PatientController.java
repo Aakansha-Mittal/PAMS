@@ -137,26 +137,26 @@ public class PatientController {
         //return "redirect:/patient/appointments?success=Appointment+canceled+successfully";
     }
 
-    @GetMapping("/profile")
-    public String showProfileForm(Authentication authentication, Model model) {
-        String email = authentication.getName();
-        Patient patient = patientService.findByEmail(email);
-        model.addAttribute("patient", patient);
-        return "patient-profile";
-    }
+//    @GetMapping("/profile")
+//    public String showProfileForm(Authentication authentication, Model model) {
+//        String email = authentication.getName();
+//        Patient patient = patientService.findByEmail(email);
+//        model.addAttribute("patient", patient);
+//        return "patient-profile";
+//    }
 
-    @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute("patient") Patient patientDetails,
-                                Authentication authentication) {
-        String email = authentication.getName();
-        Patient existingPatient = patientService.findByEmail(email);
-
-        // Set the ID from the existing patient to ensure we're updating the right record
-        patientDetails.setPatientId(existingPatient.getPatientId());
-        patientDetails.setEmail(existingPatient.getEmail()); // Email shouldn't be changed
-
-        patientService.updatePatientProfile(patientDetails);
-        return "redirect:/patient/dashboard?success";
-        //return "redirect:/patient/dashboard?success=Profile+updated+successfully";
-    }
+//    @PostMapping("/profile")
+//    public String updateProfile(@ModelAttribute("patient") Patient patientDetails,
+//                                Authentication authentication) {
+//        String email = authentication.getName();
+//        Patient existingPatient = patientService.findByEmail(email);
+//
+//        // Set the ID from the existing patient to ensure we're updating the right record
+//        patientDetails.setPatientId(existingPatient.getPatientId());
+//        patientDetails.setEmail(existingPatient.getEmail()); // Email shouldn't be changed
+//
+//        patientService.updatePatientProfile(patientDetails);
+//        return "redirect:/patient/dashboard?success";
+//        //return "redirect:/patient/dashboard?success=Profile+updated+successfully";
+//    }
 }

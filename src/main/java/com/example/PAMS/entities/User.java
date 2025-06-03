@@ -2,6 +2,7 @@ package com.example.PAMS.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,7 @@ public class User implements UserDetails {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "doctorId")
+    @ToString.Exclude
     private Doctor doctor;
 
     @OneToOne(fetch = FetchType.EAGER)
