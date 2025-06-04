@@ -11,6 +11,7 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
     List<Appointment> findByDoctorAndAppointmentDateAndTimeSlot(Doctor doctor, LocalDate date, LocalTime time);
     List<Appointment> findByPatientOrderByAppointmentDateDescTimeSlotDesc(Patient patient);
-
+    List<Appointment> findByDoctorOrderByAppointmentDateDescTimeSlotDesc(Doctor doctor);
+    List<Appointment> findByDoctorAndAppointmentDate(Doctor doctor, LocalDate date);
     List<Appointment> findByAppointmentDate(LocalDate today);
 }

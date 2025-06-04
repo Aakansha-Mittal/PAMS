@@ -1,6 +1,7 @@
 package com.example.PAMS.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,11 +17,15 @@ public class Appointment {
     @JoinColumn(name = "patientId")
     private Patient patient;
 
+    @NotNull(message = "Please select a doctor")
     @ManyToOne
     @JoinColumn(name = "doctorId")
     private Doctor doctor;
 
+    @NotNull(message = "Please select a date")
     private LocalDate appointmentDate;
+
+    @NotNull(message = "Please select a time")
     private LocalTime timeSlot;
 
     @Enumerated(EnumType.STRING)

@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body>
-<!-- <div th:replace="~{fragments/navbar :: navbar}"></div> -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container py-4">
     <!-- Success Message -->
     <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show">
-        <span th:text="${param.success}"></span>
+        <span th:if="${param.success == 'appointment_canceled'}">Appointment canceled successfully!</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
@@ -34,34 +34,33 @@
                         <th>Time</th>
                         <th>Doctor</th>
                         <th>Specialization</th>
-                        <th>Reason</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="appointment : ${appointments}">
-                        <td th:text="${#temporals.format(appointment.date, 'dd-MM-yyyy')}"></td>
-                        <td th:text="${#temporals.format(appointment.time, 'HH:mm')}"></td>
-                        <td th:text="${appointment.doctor.firstName + ' ' + appointment.doctor.lastName}"></td>
+                        <td th:text="${#temporals.format(appointment.appointmentDate, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${#temporals.format(appointment.timeSlot, 'HH:mm')}"></td>
+                        <td th:text="${appointment.doctor.name}"></td>
                         <td th:text="${appointment.doctor.specialization}"></td>
-                        <td th:text="${appointment.reason}"></td>
                         <td>
-                                    <span th:switch="${appointment.status.name()}">
-                                        <span th:case="'BOOKED'" class="badge bg-primary">Booked</span>
-                                        <span th:case="'COMPLETED'" class="badge bg-success">Completed</span>
-                                        <span th:case="'CANCELLED'" class="badge bg-secondary">Cancelled</span>
-                                    </span>
+                            <span th:switch="${appointment.status.name()}">
+                                <span th:case="'BOOKED'" class="badge bg-primary">Booked</span>
+                                <span th:case="'COMPLETED'" class="badge bg-success">Completed</span>
+                                <span th:case="'CANCELED'" class="badge bg-secondary">Canceled</span>
+                            </span>
                         </td>
-                        <!-- <td>
+                        <td>
                             <div class="btn-group" role="group">
-                                <a th:href="@{'/patient/cancel-appointment/' + ${appointment.id}}"
+                                <a th:href="@{'/patient/cancel-appointment/' + ${appointment.appointmentId}}"
                                    th:if="${appointment.status.name() == 'BOOKED'}"
-                                   class="btn btn-sm btn-outline-danger">
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Are you sure you want to cancel this appointment?');">
                                     <i class="bi bi-x-circle"></i> Cancel
                                 </a>
                             </div>
-                        </td> -->
+                        </td>
                     </tr>
                     </tbody>
                 </table>
