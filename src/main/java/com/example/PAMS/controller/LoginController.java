@@ -1,5 +1,7 @@
 package com.example.PAMS.controller;
 
+import com.example.PAMS.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
+
+    @Autowired
+    EmailService emailService;
 
         @GetMapping("/")
         public String home() {
@@ -23,6 +28,7 @@ public class LoginController {
         if (logout != null) {
             model.addAttribute("message", "You have been logged out successfully.");
         }
+        emailService.sendEmailTest();
         System.out.println();
         return "login";
     }

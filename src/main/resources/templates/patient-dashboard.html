@@ -46,17 +46,17 @@
 <!-- Main Content -->
 <div class="container py-4">
     <!-- Success Message -->
-<!--    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show">-->
-<!--        Profile updated successfully!-->
-<!--        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
-<!--    </div>-->
+    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show">
+        Profile updated successfully!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-4 mb-4">
             <div class="card profile-card">
                 <div class="card-body text-center">
-<!--                    <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Profile Image">-->
+                    <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Profile Image">
                     <h5 th:text="${patient.name}"></h5>
                     <p class="text-muted mb-1" th:text="${patient.email}"></p>
                     <p class="text-muted" th:text="${patient.phone} ?: 'Phone not provided'"></p>
@@ -102,13 +102,13 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2 d-md-flex">
-<!--                        <a th:href="@{/patient/profile}" class="btn btn-primary me-md-2">-->
-<!--                            <i class="bi bi-person-lines-fill"></i> Update Profile-->
-<!--                        </a>-->
-                        <a th:href="@{/patient/book-appointment}" class="btn btn-success me-md-2">
+                        <a th:href="@{/patient/profile}" class="btn btn-primary me-md-2">
+                            <i class="bi bi-person-lines-fill"></i> Update Profile
+                        </a>
+                        <a th:href="@{/patient/book/appointment}" class="btn btn-success me-md-2">
                             <i class="bi bi-calendar-plus"></i> Book Appointment
                         </a>
-                        <a th:href="@{/patient/appointments}" class="btn btn-secondary me-md-2">
+                        <a th:href="@{/patient/appointment/history}" class="btn btn-secondary me-md-2">
                             <i class="bi bi-clock-history"></i> View Appointments
                         </a>
                         <a th:href="@{/logout}" class="btn btn-danger">

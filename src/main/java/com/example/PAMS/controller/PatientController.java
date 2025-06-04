@@ -91,16 +91,16 @@ public class PatientController {
         return "patient-dashboard";
     }
 
-    @GetMapping("/book-appointment")
+    @GetMapping("/book/appointment")
     public String showBookAppointmentForm(Model model) {
         List<Doctor> doctors = doctorService.getAllDoctors();
         model.addAttribute("doctors", doctors);
         model.addAttribute("appointment", new Appointment());
 
-        return "book-appointment";
+        return "patient-book-appointment";
     }
 
-    @PostMapping("/book-appointment")
+    @PostMapping("/book/appointment")
     public String bookAppointment(@ModelAttribute Appointment appointment,
                                   Authentication authentication) {
         String email = authentication.getName();
@@ -114,20 +114,20 @@ public class PatientController {
             return "redirect:/patient/dashboard?success=appointment_booked";
             //return "redirect:/patient/dashboard?success=Appointment+booked+successfully";
         } else {
-            return "redirect:/patient/book-appointment?error=slot_not_available";
+            return "redirect:/patient/book/appointment?error=slot_not_available";
             //return "redirect:/patient/book-appointment?error=Slot+not+available.+Please+choose+another+time";
         }
     }
 
 
 
-    @GetMapping("/appointments")
+    @GetMapping("/appointment/history")
     public String viewAppointments(Authentication authentication, Model model) {
         String email = authentication.getName();
         Patient patient = patientService.findByEmail(email);
         List<Appointment> appointments = appointmentService.getPatientAppointments(patient);
         model.addAttribute("appointments", appointments);
-        return "appointment-history";
+        return "patient-appointment-history";
     }
 
     @PostMapping("/cancel-appointment/{id}")
@@ -137,26 +137,26 @@ public class PatientController {
         //return "redirect:/patient/appointments?success=Appointment+canceled+successfully";
     }
 
-//    @GetMapping("/profile")
-//    public String showProfileForm(Authentication authentication, Model model) {
-//        String email = authentication.getName();
-//        Patient patient = patientService.findByEmail(email);
-//        model.addAttribute("patient", patient);
-//        return "patient-profile";
-//    }
+    @GetMapping("/profile")
+    public String showProfileForm(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        Patient patient = patientService.findByEmail(email);
+        model.addAttribute("patient", patient);
+        return "patient-profile";
+    }
 
-//    @PostMapping("/profile")
-//    public String updateProfile(@ModelAttribute("patient") Patient patientDetails,
-//                                Authentication authentication) {
-//        String email = authentication.getName();
-//        Patient existingPatient = patientService.findByEmail(email);
-//
-//        // Set the ID from the existing patient to ensure we're updating the right record
-//        patientDetails.setPatientId(existingPatient.getPatientId());
-//        patientDetails.setEmail(existingPatient.getEmail()); // Email shouldn't be changed
-//
-//        patientService.updatePatientProfile(patientDetails);
-//        return "redirect:/patient/dashboard?success";
-//        //return "redirect:/patient/dashboard?success=Profile+updated+successfully";
-//    }
+    @PostMapping("/profile")
+    public String updateProfile(@ModelAttribute("patient") Patient patientDetails,
+                                Authentication authentication) {
+        String email = authentication.getName();
+        Patient existingPatient = patientService.findByEmail(email);
+
+        // Set the ID from the existing patient to ensure we're updating the right record
+        patientDetails.setPatientId(existingPatient.getPatientId());
+        patientDetails.setEmail(existingPatient.getEmail()); // Email shouldn't be changed
+
+        patientService.updatePatientProfile(patientDetails);
+        return "redirect:/patient/dashboard?success";
+        //return "redirect:/patient/dashboard?success=Profile+updated+successfully";
+    }
 }
