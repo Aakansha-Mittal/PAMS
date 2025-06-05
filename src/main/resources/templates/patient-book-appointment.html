@@ -1,40 +1,168 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- Head section remains the same as your existing code -->
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | PAMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+            --text-color: #5a5c69;
+        }
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fc;
+            color: var(--text-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            transition: all 0.3s;
+        }
+
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 10px 15px;
+            border: 1px solid #d1d3e2;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 0;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .time-slot-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time-slot {
+            padding: 10px;
+            border: 1px solid #d1d3e2;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .time-slot:hover {
+            background-color: #f0f3ff;
+            border-color: var(--primary-color);
+        }
+
+        .time-slot.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .time-slot.unavailable {
+            background-color: #f8d7da;
+            color: #842029;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border 0.75s linear infinite;
+        }
+
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+
+        .input-group-text {
+            background-color: #f8f9fc;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+    </style>
+</head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container mt-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-8">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Book Appointment</h4>
+                <div class="card-header py-3">
+                    <h4 class="mb-0 text-white"><i class="bi bi-calendar-plus me-2"></i> Book Appointment</h4>
                 </div>
-                <div class="card-body">
-                    <!-- Success/Error messages remain the same -->
+                <div class="card-body p-4">
+                    <!-- Success Message -->
+                    <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <span th:text="${success}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span th:text="${error}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
 
                     <form th:action="@{/patient/book/appointment}" th:object="${appointment}" method="post">
-                        <!-- CSRF Token if using Spring Security -->
+                        <!-- CSRF Token -->
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf}"/>
 
-                        <!-- Doctor Selection (unchanged) -->
-                        <div class="mb-3">
-                            <label for="doctor" class="form-label">Doctor</label>
+                        <!-- Doctor Selection -->
+                        <div class="mb-4">
+                            <label for="doctor" class="form-label fw-semibold">Select Doctor</label>
                             <select class="form-select" id="doctor"
                                     th:field="*{doctor.doctorId}" required
                                     onchange="loadAvailableDates()">
-                                <option value="">Select Doctor</option>
+                                <option value="">-- Select a Doctor --</option>
                                 <option th:each="doctor : ${doctors}"
                                         th:value="${doctor.doctorId}"
                                         th:text="${doctor.name + ' (' + doctor.specialization + ')'}"></option>
                             </select>
                         </div>
 
-                        <!-- Date Selection (unchanged) -->
-                        <div class="mb-3">
-                            <label for="appointmentDate" class="form-label">Date</label>
+                        <!-- Date Selection -->
+                        <div class="mb-4">
+                            <label for="appointmentDate" class="form-label fw-semibold">Appointment Date</label>
                             <div class="input-group">
                                 <input type="date" class="form-control" id="appointmentDate"
                                        th:field="*{appointmentDate}"
@@ -44,31 +172,31 @@
                                        disabled>
                                 <span class="input-group-text">
                                     <span id="dateSpinner" class="loading-spinner" style="display: none;"></span>
+                                    <i class="bi bi-calendar3"></i>
                                 </span>
                             </div>
                         </div>
 
-                        <!-- Time Selection - Modified Section -->
-                        <div class="mb-3">
-                            <label class="form-label">Available Time Slots</label>
+                        <!-- Time Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Available Time Slots</label>
                             <div id="timeSlots" class="time-slot-container">
                                 <div class="text-muted">Please select a doctor and date first</div>
                             </div>
-                            <!-- Hidden inputs for time slot -->
                             <input type="hidden" id="selectedTimeHour" name="timeHour">
                             <input type="hidden" id="selectedTimeMinute" name="timeMinute">
-                            <div class="mt-2">
-                                <span id="timeSpinner" class="loading-spinner" style="display: none;"></span>
+                            <div class="mt-2 d-flex align-items-center">
+                                <span id="timeSpinner" class="loading-spinner me-2" style="display: none;"></span>
                                 <small id="timeHelp" class="text-muted"></small>
                             </div>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary" id="bookBtn" disabled>
-                                <i class="bi bi-calendar-plus"></i> Book Appointment
+                        <div class="d-grid gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary py-2" id="bookBtn" disabled>
+                                <i class="bi bi-calendar-check me-2"></i> Confirm Appointment
                             </button>
-                            <a th:href="@{/patient/dashboard}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Back to Dashboard
+                            <a th:href="@{/patient/dashboard}" class="btn btn-outline-secondary py-2">
+                                <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
                             </a>
                         </div>
                     </form>
@@ -77,6 +205,20 @@
         </div>
     </div>
 </div>
+
+<!-- Footer without copyright year -->
+<footer class="py-4 bg-light mt-auto">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small">
+            <div class="text-muted">Patient Appointment Management System</div>
+            <div>
+                <a href="#">Privacy Policy</a>
+                &middot;
+                <a href="#">Terms &amp; Conditions</a>
+            </div>
+        </div>
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -157,7 +299,7 @@
                     timeSlotsContainer.appendChild(slotElement);
                 });
 
-                timeHelp.textContent = `Available time slots for ${new Date(date).toLocaleDateString()}`;
+                timeHelp.textContent = `Available time slots for ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
             } else {
                 timeSlotsContainer.innerHTML =
                     '<div class="text-danger">No available slots for this date</div>';
@@ -201,7 +343,7 @@
         // Show loading state
         const bookBtn = document.getElementById('bookBtn');
         bookBtn.disabled = true;
-        bookBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Booking...';
+        bookBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Booking...';
 
         return true;
     });
