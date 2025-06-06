@@ -7,6 +7,7 @@ import com.example.PAMS.repository.AppointmentRepository;
 import com.example.PAMS.repository.DoctorRepository;
 import com.example.PAMS.repository.PatientRepository;
 import com.example.PAMS.service.AppointmentService;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -97,9 +97,23 @@ public class AppointmentService {
         return appointmentRepository.findByPatientOrderByAppointmentDateDescTimeSlotDesc(patient);
     }
 
-    public void cancelAppointment(Integer appointmentId) {
+    @Transactional
+    public void cancelAppointment(Integer appointmentId, String patientEmail) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        if (!appointment.getPatient().getEmail().equals(patientEmail)) {
+            throw new RuntimeException("You can only cancel your own appointments");
+        }
+
+        if (appointment.getStatus() != Appointment.AppointmentStatus.BOOKED) {
+            throw new RuntimeException("Only booked appointments can be canceled");
+        }
+
+        if (appointment.getAppointmentDate().isBefore(LocalDate.now())) {
+            throw new RuntimeException("Cannot cancel past appointments");
+        }
+
         appointment.setStatus(Appointment.AppointmentStatus.CANCELED);
         appointmentRepository.save(appointment);
     }

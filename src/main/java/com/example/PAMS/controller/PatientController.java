@@ -94,10 +94,11 @@ public class PatientController {
     }
 
     @PostMapping("/cancel-appointment/{id}")
-    public String cancelAppointment(@PathVariable Integer id) {
-        appointmentService.cancelAppointment(id);
+    public String cancelAppointment(@PathVariable Integer id, Authentication authentication) {
+        appointmentService.cancelAppointment(id, authentication.getName());
         return "redirect:/patient/appointment/history?success=appointment_canceled";
     }
+
 
     @GetMapping("/profile")
     public String showProfileForm(Authentication authentication, Model model) {
